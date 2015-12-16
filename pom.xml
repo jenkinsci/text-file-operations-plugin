@@ -79,8 +79,8 @@
 	</pluginRepositories>
 
 	<scm>
-	  <connection>scm:git:ssh://github.com/jenkinsci/text-file-operations-plugin.git</connection>
-	  <developerConnection>scm:git:ssh://git@github.com/jenkinsci/text-file-operations-plugin.git</developerConnection>
+	  <connection>scm:git:https://github.com/jenkinsci/text-file-operations-plugin.git</connection>
+	  <developerConnection>scm:git:https://github.com/jenkinsci/text-file-operations-plugin.git</developerConnection>
 	  <url>https://github.com/jenkinsci/text-file-operations-plugin</url>
 	</scm>
 
