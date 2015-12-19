@@ -10,7 +10,7 @@
 
 	<groupId>com.etas.jenkins.plugins</groupId>
 	<artifactId>text-file-operations</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 	<packaging>hpi</packaging>
 	<url>https://wiki.jenkins-ci.org/display/JENKINS/Text+File+Operations+Plugin</url>
 
