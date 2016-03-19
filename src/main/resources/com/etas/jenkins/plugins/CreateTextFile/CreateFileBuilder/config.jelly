@@ -3,9 +3,12 @@
 	<f:entry title="File Path: " field="textFilePath">
 		<f:textbox></f:textbox>
 	</f:entry>
+	<f:entry title="Create at Workspace:" field="useWorkspace">
+        <f:checkbox/>
+	</f:entry>
 	<f:entry title="Text File Content: " field="textFileContent">
 		<f:textarea></f:textarea>
-	</f:entry>
+	</f:entry>	
 	<f:entry title="File options: " field="fileOption">
 		<f:entry>
 			<f:radio name="fileOption" title="Insert at start of file"

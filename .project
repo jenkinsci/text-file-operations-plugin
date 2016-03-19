@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>create_text_file</name>
+  <name>text-file-operations</name>
   <comment>Creates or updates text file with specified contents. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
   <buildSpec>

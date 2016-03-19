@@ -46,13 +46,15 @@ public class CreateFileBuilder extends Builder {
     private final String textFilePath;
     private final String textFileContent;
     private final String fileOption;
+    private final boolean useWorkspace;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public CreateFileBuilder(String textFilePath, String textFileContent,String fileOption){
+    public CreateFileBuilder(String textFilePath, String textFileContent,String fileOption,boolean useWorkspace){
         this.textFilePath = textFilePath;
         this.textFileContent =  textFileContent;
         this.fileOption = fileOption;
+        this.useWorkspace = useWorkspace;
         
     }
 
@@ -71,24 +73,35 @@ public class CreateFileBuilder extends Builder {
     	return fileOption;
     }
     
+    public boolean getUseWorkspace(){
+    	return useWorkspace;
+    }
+    
     @SuppressWarnings("rawtypes")
 	@Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-
+    	boolean result = false;
     	try {
-			String resolvedFilePath = build.getEnvironment(listener).expand(textFilePath);
+    		
+    		String tempFilePath = textFilePath;
+    		if(this.useWorkspace && !(textFilePath.startsWith("${WORKSPACE}")||textFilePath.startsWith("$WORKSPACE")))
+    		{
+    			tempFilePath = "${WORKSPACE}\\" + textFilePath;
+    		}
+			String resolvedFilePath = build.getEnvironment(listener).expand(tempFilePath);
 			String resolvedContent = build.getEnvironment(listener).expand(textFileContent);
 			
-			launcher.getChannel().call(new CreateFileTask(resolvedFilePath, resolvedContent, fileOption));
+			result = launcher.getChannel().call(new CreateFileTask(resolvedFilePath, resolvedContent, fileOption,listener));
 			
 			
 		} catch (Exception e) {
 
-			e.printStackTrace(listener.getLogger());
+			listener.getLogger().println("Failed to create/update file.");
+			listener.getLogger().println(e.getMessage());
 			return false;
 		} 
     	
-        return true;
+        return result;
     }
 
 

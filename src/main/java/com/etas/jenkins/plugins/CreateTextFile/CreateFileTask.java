@@ -25,6 +25,7 @@ SOFTWARE.
 package com.etas.jenkins.plugins.CreateTextFile;
 
 import hudson.FilePath;
+import hudson.model.BuildListener;
 import hudson.remoting.Callable;
 
 import java.io.File;
@@ -41,12 +42,14 @@ public class CreateFileTask implements Serializable,Callable<Boolean,IOException
 	private final String fileContent;
 	private final String filePath;
 	private final String fileOption;
+	private static BuildListener listener;
 
 	
-	public CreateFileTask(String filePath,String fileContent,String fileOption){
+	public CreateFileTask(String filePath,String fileContent,String fileOption,BuildListener listener){
 		this.filePath = filePath;
 		this.fileContent = fileContent;
 		this.fileOption = fileOption;
+		CreateFileTask.listener = listener;
 	}
 	
 	@Override
@@ -63,26 +66,34 @@ public class CreateFileTask implements Serializable,Callable<Boolean,IOException
 			String existingFileContents = "";
 			String eol = System.getProperty("line.separator");
 			
+			listener.getLogger().println(String.format("Creating/updating file at '%s'", filePath));
+			
 			if(!textFile.exists()){
-				
+				listener.getLogger().println(String.format("File does not exist at '%s', new file will be created.", filePath));
 				finalFileContent = fileContent;
 			}			
 			else{
-				
+				listener.getLogger().println(String.format("File already exists at '%s', selected write option is '%s'", filePath,fileOption));
 				existingFileContents = textFile.readToString();
 				
 				if(fileOption.equalsIgnoreCase("overWrite")){
-					
 					finalFileContent = fileContent;
 					
 				}else if(fileOption.equalsIgnoreCase("appendToEnd")){
 					
-					finalFileContent = existingFileContents.concat(eol + fileContent);
+					if(existingFileContents.endsWith(eol)){
+						finalFileContent = existingFileContents.concat(fileContent);
+					}else{
+						finalFileContent = existingFileContents.concat(eol + fileContent);
+					}
+										
+				}else if(fileOption.equalsIgnoreCase("insertAtStart")){			
 					
-				}else if(fileOption.equalsIgnoreCase("insertAtStart")){
-									
-					finalFileContent = fileContent.concat(eol + existingFileContents);
-
+					if(existingFileContents.startsWith(eol)){
+						finalFileContent = fileContent.concat(existingFileContents);
+					}else{
+						finalFileContent = fileContent.concat(eol + existingFileContents);
+					}
 				}
 				
 				textFile.deleteContents();
@@ -93,16 +104,13 @@ public class CreateFileTask implements Serializable,Callable<Boolean,IOException
 			
 			textFile.write(finalFileContent, "UTF-8");
 			
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 
-			e.printStackTrace();
+			listener.getLogger().println("Failed to create/update file.");
+			listener.getLogger().println(e.getMessage());	
 			return false;
-		} catch (IOException e){
-			
-			e.printStackTrace();
-			return false;
-		}
-		
+		} 
+		listener.getLogger().println("File successfully created/updated at "+ filePath);
 		return true;
 	}
 
