@@ -60,7 +60,7 @@ public class CreateFileBuilderTest {
         j.jenkins.getGlobalNodeProperties().add(prop);
         FreeStyleProject project = j.createFreeStyleProject();
         
-        CreateFileBuilder builder = new CreateFileBuilder("${WORKSPACE}\\${FILE_NAME}", "${LINE1}", "overWrite",false);
+        CreateFileBuilder builder = new CreateFileBuilder("${WORKSPACE}"+ System.getProperty("file.separator", "\\")+"${FILE_NAME}", "${LINE1}", "overWrite",false);
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String content = build.getWorkspace().child("NewFile.txt").readToString();
@@ -128,7 +128,7 @@ public class CreateFileBuilderTest {
 		});
         
         
-        CreateFileBuilder builder = new CreateFileBuilder("${WORKSPACE}\\${FILE_NAME}", "${LINE2}", "appendToEnd",true);
+        CreateFileBuilder builder = new CreateFileBuilder("${WORKSPACE}"+ System.getProperty("file.separator", "\\")+"${FILE_NAME}", "${LINE2}", "appendToEnd",true);
         project.getBuildersList().add(builder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String filePath = build.getWorkspace().child("ExistingFile.txt").getRemote();

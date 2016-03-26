@@ -86,7 +86,7 @@ public class CreateFileBuilder extends Builder {
     		String tempFilePath = textFilePath;
     		if(this.useWorkspace && !(textFilePath.startsWith("${WORKSPACE}")||textFilePath.startsWith("$WORKSPACE")))
     		{
-    			tempFilePath = "${WORKSPACE}\\" + textFilePath;
+    			tempFilePath = "${WORKSPACE}" + System.getProperty("file.separator", "\\") + textFilePath;
     		}
 			String resolvedFilePath = build.getEnvironment(listener).expand(tempFilePath);
 			String resolvedContent = build.getEnvironment(listener).expand(textFileContent);
