@@ -86,18 +86,19 @@ public class CreateFileBuilder extends Builder {
     		String tempFilePath = textFilePath;
     		if(this.useWorkspace && !(textFilePath.startsWith("${WORKSPACE}")||textFilePath.startsWith("$WORKSPACE")))
     		{
-    			tempFilePath = "${WORKSPACE}" + System.getProperty("file.separator", "\\") + textFilePath;
+    			tempFilePath = "${WORKSPACE}" + "/" + textFilePath;
     		}
+    		
 			String resolvedFilePath = build.getEnvironment(listener).expand(tempFilePath);
 			String resolvedContent = build.getEnvironment(listener).expand(textFileContent);
 			
-			result = launcher.getChannel().call(new CreateFileTask(resolvedFilePath, resolvedContent, fileOption,listener));
+			result = launcher.getChannel().call(new CreateFileTask(resolvedFilePath, resolvedContent, fileOption, listener));
 			
 			
 		} catch (Exception e) {
 
-			listener.getLogger().println("Failed to create/update file.");
-			listener.getLogger().println(e.getMessage());
+			listener.getLogger().println("Failed to invoke 'CreateFileTask': " + e.getMessage());
+			e.printStackTrace(listener.getLogger());
 			return false;
 		} 
     	

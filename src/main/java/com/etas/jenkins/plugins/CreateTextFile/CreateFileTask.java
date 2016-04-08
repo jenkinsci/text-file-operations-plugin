@@ -42,14 +42,14 @@ public class CreateFileTask implements Serializable,Callable<Boolean,IOException
 	private final String fileContent;
 	private final String filePath;
 	private final String fileOption;
-	private static BuildListener listener;
+	private BuildListener listener;
 
 	
 	public CreateFileTask(String filePath,String fileContent,String fileOption,BuildListener listener){
 		this.filePath = filePath;
 		this.fileContent = fileContent;
 		this.fileOption = fileOption;
-		CreateFileTask.listener = listener;
+		this.listener = listener;
 	}
 	
 	@Override
@@ -106,8 +106,8 @@ public class CreateFileTask implements Serializable,Callable<Boolean,IOException
 			
 		} catch (Exception e) {
 
-			listener.getLogger().println("Failed to create/update file.");
-			listener.getLogger().println(e.getMessage());	
+			listener.getLogger().println("Failed to create/update file. " + e.getMessage());
+			e.printStackTrace(listener.getLogger());	
 			return false;
 		} 
 		listener.getLogger().println("File successfully created/updated at "+ filePath);
